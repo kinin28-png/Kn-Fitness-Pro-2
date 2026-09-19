@@ -1,0 +1,5 @@
+# Requirements for Kn Fitness Pro 2
+# Desktop GUI (PySide6) and Packaging (PyInstaller)
+PySide6>=6.5.0
+pyinstaller>=6.0.0
+
