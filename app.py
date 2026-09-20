@@ -159,15 +159,32 @@ class ExerciseDemoDialog(QDialog):
         info_layout.addWidget(eq_label)
         layout.addWidget(info_card)
 
-        # Big Video Demo Button
+        # Big Video Demo Button (Supports both YouTube links and local files in src/videos/)
         video_url = self.data.get("video_url", "https://www.youtube.com")
-        play_button = QPushButton("▶️ WATCH VIDEO DEMO IN BROWSER")
+        is_web = video_url.startswith("http://") or video_url.startswith("https://")
+
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        local_full_path = os.path.normpath(os.path.join(base_dir, video_url)) if not is_web else None
+        file_exists = os.path.exists(local_full_path) if local_full_path else False
+
+        if is_web:
+            btn_text = "▶️ WATCH VIDEO DEMO ON YOUTUBE"
+            caption_text = f"Demo Link: <a href='{video_url}' style='color: #40C4FF;'>{video_url}</a>"
+        else:
+            if file_exists:
+                btn_text = "▶️ PLAY LOCAL VIDEO DEMO"
+                caption_text = f"📁 Local Video: <span style='color:#35E06F;'>{video_url} (Ready)</span>"
+            else:
+                btn_text = "▶️ PLAY LOCAL VIDEO DEMO"
+                caption_text = f"📁 Local Video: <span style='color:#FFB020;'>{video_url} (Place .mp4 in src/videos/)</span>"
+
+        play_button = QPushButton(btn_text)
         play_button.setObjectName("play_button")
         play_button.setCursor(Qt.PointingHandCursor)
-        play_button.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(video_url)))
+        play_button.clicked.connect(lambda: self.launch_video(video_url, is_web, local_full_path))
         layout.addWidget(play_button)
 
-        url_caption = QLabel(f"Demo Link: <a href='{video_url}' style='color: #40C4FF;'>{video_url}</a>")
+        url_caption = QLabel(caption_text)
         url_caption.setOpenExternalLinks(True)
         url_caption.setStyleSheet("font-size: 11px; color: #78909C;")
         layout.addWidget(url_caption)
@@ -234,6 +251,18 @@ class ExerciseDemoDialog(QDialog):
         close_btn.clicked.connect(self.accept)
         btn_bar.addWidget(close_btn)
         dialog_layout.addLayout(btn_bar)
+
+    def launch_video(self, video_url, is_web, local_full_path):
+        if is_web:
+            QDesktopServices.openUrl(QUrl(video_url))
+        else:
+            if local_full_path and os.path.exists(local_full_path):
+                QDesktopServices.openUrl(QUrl.fromLocalFile(local_full_path))
+            elif os.path.exists(video_url):
+                QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.abspath(video_url)))
+            else:
+                QDesktopServices.openUrl(QUrl.fromLocalFile(local_full_path or video_url))
+
 
 
 # ==============================================================================

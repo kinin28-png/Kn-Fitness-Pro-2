@@ -10,15 +10,16 @@ import socketserver
 import os
 import sys
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+WEB_DIR = os.path.join(ROOT_DIR, "web")
+VIDEOS_DIR = os.path.join(ROOT_DIR, "src", "videos")
 PORT = 5000
-WEB_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web")
 
 
 def get_local_ip():
     """Finds the local network IP address of this machine."""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
-        # Doesn't actually send traffic, just selects preferred route
         s.connect(('8.8.8.8', 80))
         ip = s.getsockname()[0]
     except Exception:
@@ -28,9 +29,21 @@ def get_local_ip():
     return ip
 
 
+
 class CustomHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=WEB_DIR, **kwargs)
+
+    def translate_path(self, path):
+        # Route video requests to src/videos folder
+        clean_path = path.split('?', 1)[0].split('#', 1)[0]
+        if clean_path.startswith("/src/videos/"):
+            rel_path = clean_path[len("/src/videos/"):]
+            return os.path.join(VIDEOS_DIR, rel_path)
+        elif clean_path.startswith("/videos/"):
+            rel_path = clean_path[len("/videos/"):]
+            return os.path.join(VIDEOS_DIR, rel_path)
+        return super().translate_path(path)
 
     def log_message(self, format, *args):
         # Clean terminal logging

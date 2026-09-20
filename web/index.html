@@ -1006,13 +1006,21 @@
 
       document.getElementById("modalTargetMuscle").innerHTML = `<b>🎯 Primary Muscle:</b> ${ex.target_muscle}`;
 
-      // Video Player iframe
-      const embedUrl = ex.video_url;
+      // Video Player (Supports both local MP4/MOV files and YouTube embeds)
+      const videoSrc = ex.video_url || "";
+      const isLocal = videoSrc.endsWith(".mp4") || videoSrc.endsWith(".mov") || videoSrc.endsWith(".webm") || videoSrc.startsWith("src/") || videoSrc.startsWith("videos/");
       const container = document.getElementById("modalVideoContainer");
-      container.innerHTML = `<iframe src="${embedUrl}?rel=0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
 
-      // Direct Link
-      document.getElementById("modalDirectLink").href = ex.watch_url || ex.video_url;
+      if (isLocal) {
+        const cleanSrc = videoSrc.startsWith("/") ? videoSrc : "/" + videoSrc;
+        container.innerHTML = `<video controls autoplay playsinline style="width:100%; height:100%; object-fit:contain; background:#000;" src="${cleanSrc}"></video>`;
+        document.getElementById("modalDirectLink").innerText = "📁 Open Video File";
+        document.getElementById("modalDirectLink").href = cleanSrc;
+      } else {
+        container.innerHTML = `<iframe src="${videoSrc}?rel=0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+        document.getElementById("modalDirectLink").innerText = "▶️ Open Video in YouTube";
+        document.getElementById("modalDirectLink").href = ex.watch_url || videoSrc;
+      }
 
       // Instructions
       const instDiv = document.getElementById("modalInstructions");
