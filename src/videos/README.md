@@ -17,3 +17,4 @@ Change the `video_url` for any exercise to point to the file path:
 - `.mp4` (Recommended for all devices and web)
 - `.mov` (Apple QuickTime)
 - `.webm` (Web video)
+
