@@ -30,7 +30,7 @@ EXERCISE_VIDEO_LIBRARY = {
     # =========================================================================
     "Incline Barbell Press": {
         "category": "Chest Exercises",
-        "video_url": "https://www.youtube.com/watch?v=8iPEnn-ltC8",
+        "video_url": "https://youtu.be/2HfQMwgRh-8?si=QmLP2HAtgD_l6ca6",
         "target_muscle": "Upper Chest (Clavicular Head) & Front Delts",
         "equipment": "Incline Bench, Barbell, Weight Plates",
         "difficulty": "Intermediate",
@@ -46,7 +46,7 @@ EXERCISE_VIDEO_LIBRARY = {
     },
     "Flat Barbell Bench Press": {
         "category": "Chest Exercises",
-        "video_url": "https://www.youtube.com/watch?v=rT7DgCr-3pg",
+        "video_url": "https://youtu.be/a82Bbj52DDk?si=Jw1pGIBYA3uJBnHl",
         "target_muscle": "Mid & Lower Chest, Triceps, Anterior Deltoids",
         "equipment": "Flat Bench, Barbell, Rack",
         "difficulty": "Intermediate",
